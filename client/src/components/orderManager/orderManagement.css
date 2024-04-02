@@ -1,0 +1,23 @@
+.order-management {
+    margin: 20px;
+  }
+  
+  .order {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .order h3 {
+    margin-bottom: 5px;
+  }
+  
+  .order ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .order li {
+    margin-bottom: 5px;
+  }
+  

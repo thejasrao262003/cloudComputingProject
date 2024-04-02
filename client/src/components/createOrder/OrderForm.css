@@ -1,0 +1,58 @@
+.order-form {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+  }
+  
+  .order-form h2 {
+    text-align: center;
+  }
+  
+  .order-form form {
+    margin-top: 20px;
+  }
+  
+  .order-form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .order-form input[type="text"],
+  .order-form input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  .order-form button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .order-form button:hover {
+    background-color: #0056b3;
+  }
+  
+  .order-form ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .order-form ul li {
+    margin-bottom: 5px;
+  }
+  
