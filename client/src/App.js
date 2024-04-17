@@ -1,29 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Signup from './components/Signup/signup';
-import login from './components/Login/login';
-import main from './components/Main/main';
-import AddProductForm from './components/addProduct/addProduct';
-import ProductList from './components/displayProducts/displayProducts';
-import OrderManagement from './components/orderManager/orderManager';
-import OrderForm from './components/createOrder/orderCreation';
+import Signup from './Signup/signup';
+import LoginForm from './Login/login';
+import HomePage from './Login/homePage';
+import AddProductForm from './AddProducts/addProducts';
+import ProductList from './DisplayProducts.js/ProductList';
+import CartPage from './Cart/Cart';
 
 function App() {
-  return (
-    <Router>
-      <div className="App">
-        <Switch>
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path='/login' component={login} />
-          <Route exact path='/dashboard' component={main}/>
-          <Route exact path="/addProduct" component={AddProductForm} />
-          <Route exact path='/displayProducts' component={ProductList}/>
-          <Route exact path="/orders" component={OrderManagement} />
-          <Route exact path="/orderCreation" component={OrderForm} />
-        </Switch>
-      </div>
-    </Router>
-  );
+    const [userState, setUserState] = useState(null);
+
+    return (
+        <Router>
+            <div className="App">
+                <Switch>
+                    <Route exact path="/signup" component={Signup} />
+                    <Route exact path="/login" component={LoginForm} />
+                    <Route exact path='/' component={HomePage}/>
+                    <Route exact path='/addProducts' component={AddProductForm}/>
+                    <Route exact path='/displayProducts' component={ProductList}/>
+                    <Route exact path='/cart' component={CartPage}/>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;

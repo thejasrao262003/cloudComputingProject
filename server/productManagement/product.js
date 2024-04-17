@@ -5,10 +5,10 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 5002;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/microservices', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb+srv://thejasrao262003:Vtap2009@cluster0.il7emnf.mongodb.net/ecommerce?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('Error connecting to MongoDB:', err));
 
@@ -29,8 +29,8 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    productImageURL: { // Change to store image URL
-        type: String, // Store image URL as string
+    productImageURL: {
+        type: String,
         required: true
     }
 });
@@ -49,12 +49,27 @@ app.post('/products', async (req, res) => {
             productName,
             productDetails,
             price,
-            productImageURL // Include image URL
+            productImageURL
         });
         await product.save();
         res.status(201).json(product);
     } catch (err) {
         console.error('Error adding product:', err);
+        res.status(500).send('Server error');
+    }
+});
+
+// Route for fetching product details by ID
+app.get('/products/:productId', async (req, res) => {
+    try {
+        const productId = req.params.productId;
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).send('Product not found');
+        }
+        res.json(product);
+    } catch (err) {
+        console.error('Error fetching product details:', err);
         res.status(500).send('Server error');
     }
 });

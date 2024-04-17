@@ -1,126 +1,107 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const bcrypt = require("bcrypt");
-const cookieParser = require("cookie-parser");
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const app = express();
-const PORT = 3003;
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Configure CORS
-const corsOptions = {
-  origin: "http://localhost:3000", // Replace with the origin of your frontend application
-  credentials: true,
-};
-app.use(cors(corsOptions));
-
-// Connect to MongoDB
-mongoose
-  .connect("mongodb://localhost:27017/microservices", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-  });
-
-// Use cookie-parser middleware
-app.use(cookieParser());
+// Middleware for logging requests
+app.use((req, res, next) => {
+    console.log(req.path, req.method);
+    next();
+});
 
 // Define user schema
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  phoneNumber: Number,
-  age: Number,
-  address: String,
-  password: String,
+const schema = mongoose.Schema;
+const UserSchema = new schema({
+  email: {
+      type: String,
+      required: true,
+      unique: true
+  },
+  password: {
+      type: String,
+      required: true
+  },
+  name: {
+      type: String,
+      required: true
+  },
+  phoneNumber: {
+      type: String,
+      required: true
+  },
+  address: {
+      type: String,
+      required: true
+  },
+  items_in_cart: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }] // Array of product ids
+  // Add more fields as needed
 });
 
-// Define user model
-const User = mongoose.model("User", userSchema);
+// Model for users
+const UserModel = mongoose.model('Users', UserSchema);
 
-// Parse JSON request body
-app.use(express.json());
+// Route for login
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            throw Error('Email not registered');
+        }
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            throw Error('Incorrect password');
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
 
-// Route to add a new user
-app.post("/addUser", async (req, res) => {
+// Route for signup
+app.post('/signup', async (req, res) => {
+    const { email, password, name, phoneNumber, address } = req.body;
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+        const user = await UserModel.create({ email, password: hashedPassword, name, phoneNumber, address });
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});
+app.post('/cart/add', async (req, res) => {
+  const { userId, productId, quantity } = req.body;
+
   try {
-    // Hash the password before saving it
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    // Find the user by ID
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-    // Create a new user instance with hashed password
-    const newUser = new User({
-      name: req.body.name,
-      email: req.body.email,
-      phoneNumber: req.body.phoneNumber,
-      age: req.body.age,
-      address: req.body.address,
-      password: hashedPassword,
+    // Add the product ID to the user's cart
+    user.items_in_cart.push({ productId, quantity });
+    await user.save();
+
+    res.status(200).json({ message: 'Item added to cart successfully', user });
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Route for adding items to the user's cart
+
+// Connect to MongoDB
+mongoose.connect("mongodb+srv://thejasrao262003:Vtap2009@cluster0.il7emnf.mongodb.net/ecommerce?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log("Connected to MongoDB");
+        app.listen(5001, () => console.log("Server running"));
+    }).catch((error) => {
+        console.log(error);
     });
-
-    // Save the new user to the database
-    const savedUser = await newUser.save();
-
-    // Send the saved user as the response
-    res.json(savedUser);
-  } catch (error) {
-    console.error("Error adding user:", error);
-    res.status(500).send("Error adding user");
-  }
-});
-
-// Login route
-app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    console.log(user);
-    if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    if (!passwordMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    res.cookie("userId", user._id, { httpOnly: true });
-
-    res.status(200).json({ message: "Login successful", user });
-    console.log("Login Successful");
-  } catch (error) {
-    console.error("Error logging in:", error);
-    res.status(500).send("Error logging in");
-  }
-});
-
-app.get("/dashboard", async (req, res) => {
-    console.log(req.cookies);
-  const userId = req.cookies.userId;
-  console.log(userId);
-  if (!userId) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    res.status(200).json(user);
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).send("Error fetching user data");
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
