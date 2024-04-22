@@ -5,7 +5,7 @@ pipeline {
             steps {
                 script {
                     // Log in to Docker Hub
-                    bat 'docker login -u thejasrao2003 -p "KingKohli" https://index.docker.io/v1/'
+                    sh 'docker login -u thejasrao2003 -p "KingKohli" https://index.docker.io/v1/'
                     
                     // Build and push Docker images for each deployment
                     dockerImagePush('nginx', 'latest')
