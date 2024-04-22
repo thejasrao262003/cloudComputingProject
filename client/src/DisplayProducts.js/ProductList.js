@@ -10,7 +10,7 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5002/products');
+        const response = await axios.get('http://localhost:5002/api/product');
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -25,18 +25,21 @@ const ProductList = () => {
     }
   }, []);
 
-  const addToCart = async (productId, productName) => {
+  const addToCart = async (productId, productName, productImageURL) => {
     try {
       const userEmail = user.email;
-      await axios.post('http://localhost:5003/cart/add', {
+      const userId = user._id;
+      await axios.post('http://localhost:5003/api/order/cart/add', {
+        userId,
         productId,
         productName,
+        productImageURL,
         userEmail
       });
       alert('Product added to cart successfully');
     } catch (error) {
       console.error('Error adding product to cart:', error);
-      alert('Error adding product to cart');
+      alert('Product already in cart');
     }
   };
 
@@ -81,7 +84,7 @@ const ProductList = () => {
               <p className="product-details">Details: {product.productDetails}</p>
               <div className="add-to-cart-section">
                 <input type="number" defaultValue="1" min="1" className="quantity-input" />
-                <button className="add-to-cart-button" onClick={() => addToCart(product._id, product.productName)}>Add to Cart</button>
+                <button className="add-to-cart-button" onClick={() => addToCart(product._id, product.productName, product.productImageURL)}>Add to Cart</button>
               </div>
             </div>
           </div>

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - user
+      - product
+      - order
+      - client
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+
+  user:
+    build:
+      context: ./server/userManagement
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+
+  product:
+    build:
+      context: ./server/productManagement
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5002"
+
+  order:
+    build:
+      context: ./server/orderManagement
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5003"

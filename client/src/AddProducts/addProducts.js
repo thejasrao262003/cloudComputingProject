@@ -5,7 +5,7 @@ import "./addProducts.css";
 const AddProductForm = () => {
   const [productName, setProductName] = useState('');
   const [productDetails, setProductDetails] = useState('');
-  const [productImageURL, setProductImageURL] = useState(''); // State for image URL
+  const [productImageURL, setProductImageURL] = useState('');
   const [price, setPrice] = useState('');
 
   const handleSubmit = async (e) => {
@@ -13,12 +13,12 @@ const AddProductForm = () => {
     const formData = {
       productName,
       productDetails,
-      productImageURL, // Include image URL in form data
+      productImageURL,
       price
     };
 
     try {
-      await axios.post('http://localhost:5002/products', formData);
+      await axios.post('http://localhost:5002/api/product', formData);
       alert('Product added successfully!');
     } catch (error) {
       console.error('Error adding product:', error);
@@ -48,7 +48,7 @@ const AddProductForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="productImageURL">Image URL:</label> {/* Input for image URL */}
+          <label htmlFor="productImageURL">Image URL:</label> {}
           <input
             type="text"
             id="productImageURL"
@@ -57,7 +57,7 @@ const AddProductForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="price">Price:</label> {/* Adding price field */}
+          <label htmlFor="price">Price:</label> {}
           <input
             type="number"
             id="price"
