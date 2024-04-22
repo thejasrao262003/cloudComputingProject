@@ -7,12 +7,11 @@ pipeline {
                     // Log in to Docker Hub
                     sh 'docker login -u thejasrao2003 -p "KingKohli" https://index.docker.io/v1/'
                     
-                    // Build and push Docker images for each deployment
-                    dockerImagePush('nginx', 'latest')
-                    dockerImagePush('thejasrao2003/mircro_services-client', 'latest')
-                    dockerImagePush('thejasrao2003/mircro_services-user', 'latest')
-                    dockerImagePush('thejasrao2003/mircro_services-product', 'latest')
-                    dockerImagePush('thejasrao2003/mircro_services-order', 'latest')
+                    dockerImagePush('thejasrao2003', 'nginx', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-client', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-user', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-product', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-order', 'latest')
                 }
             }
         }
@@ -43,8 +42,9 @@ pipeline {
         }
     }
 }
-def dockerImagePush(imageName, imageTag) {
-    def customImage = docker.build(imageName, "-f ${imageName}/Dockerfile .")
-    customImage.tag("${imageName}:${imageTag}")
+def dockerImagePush(repository, imageName, imageTag) {
+    def customImage = docker.build(repository, "-f ${imageName}/Dockerfile .")
+    customImage.tag("${repository}/${imageName}:${imageTag}")
     customImage.push()
 }
+
