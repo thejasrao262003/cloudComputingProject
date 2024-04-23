@@ -19,6 +19,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
+                    sh "minikube start"
                     // Apply Kubernetes deployment
                     sh "kubectl apply -f kubernetes_deployment.yaml"
                     
