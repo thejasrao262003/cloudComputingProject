@@ -7,11 +7,11 @@ pipeline {
                     // Log in to Docker Hub
                     sh 'docker login -u thejasrao2003 -p "KingKohli" https://index.docker.io/v1/'
                     
-                    // dockerImagePush('thejasrao2003', 'nginx', 'latest')
-                    // dockerImagePush('thejasrao2003', 'mircro_services-client', 'latest')
-                    // dockerImagePush('thejasrao2003', 'mircro_services-user', 'latest')
-                    // dockerImagePush('thejasrao2003', 'mircro_services-product', 'latest')
-                    // dockerImagePush('thejasrao2003', 'mircro_services-order', 'latest')
+                    dockerImagePush('thejasrao2003', 'nginx', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-client', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-user', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-product', 'latest')
+                    dockerImagePush('thejasrao2003', 'mircro_services-order', 'latest')
                 }
             }
         }
