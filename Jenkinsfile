@@ -16,20 +16,15 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Images') {
+        stage('Build Docker Images') {
             steps {
-            //     sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
-                sh 'docker login -u ${thejasrao2003} -p ${KingKohli} ${https://index.docker.io/v1/}'
-                sh 'docker build -t thejasrao2003/mircro_services-client -f mircro_services-client/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-user -f mircro_services-user/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-product -f mircro_services-product/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-order -f mircro_services-order/Dockerfile .'
-
-                sh 'docker push thejasrao2003/nginx:latest'
-                sh 'docker push thejasrao2003/mircro_services-client:latest'
-                sh 'docker push thejasrao2003/mircro_services-user:latest'
-                sh 'docker push thejasrao2003/mircro_services-product:latest'
-                sh 'docker push thejasrao2003/mircro_services-order:latest'
+                script {
+                    // Build Docker images from the specified directories
+                    sh 'docker build -t thejasrao2003/mircro_services-client -f client/Dockerfile client/.'
+                    sh 'docker build -t thejasrao2003/mircro_services-user -f server/userManagement/Dockerfile server/userManagement/.'
+                    sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagment/Dockerfile server/productManagment/.'
+                    sh 'docker build -t thejasrao2003/mircro_services-order -f server/orderManagement/Dockerfile server/orderManagement/.'
+                }
             }
         }
         
