@@ -16,21 +16,21 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Images') {
-            steps {
-                sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-client -f mircro_services-client/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-user -f mircro_services-user/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-product -f mircro_services-product/Dockerfile .'
-                sh 'docker build -t thejasrao2003/mircro_services-order -f mircro_services-order/Dockerfile .'
+        // stage('Build and Push Docker Images') {
+        //     steps {
+        //         sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
+        //         sh 'docker build -t thejasrao2003/mircro_services-client -f mircro_services-client/Dockerfile .'
+        //         sh 'docker build -t thejasrao2003/mircro_services-user -f mircro_services-user/Dockerfile .'
+        //         sh 'docker build -t thejasrao2003/mircro_services-product -f mircro_services-product/Dockerfile .'
+        //         sh 'docker build -t thejasrao2003/mircro_services-order -f mircro_services-order/Dockerfile .'
 
-                sh 'docker push thejasrao2003/nginx:latest'
-                sh 'docker push thejasrao2003/mircro_services-client:latest'
-                sh 'docker push thejasrao2003/mircro_services-user:latest'
-                sh 'docker push thejasrao2003/mircro_services-product:latest'
-                sh 'docker push thejasrao2003/mircro_services-order:latest'
-            }
-        }
+        //         sh 'docker push thejasrao2003/nginx:latest'
+        //         sh 'docker push thejasrao2003/mircro_services-client:latest'
+        //         sh 'docker push thejasrao2003/mircro_services-user:latest'
+        //         sh 'docker push thejasrao2003/mircro_services-product:latest'
+        //         sh 'docker push thejasrao2003/mircro_services-order:latest'
+        //     }
+        // }
         
         stage('Deploy to Kubernetes') {
             steps {
