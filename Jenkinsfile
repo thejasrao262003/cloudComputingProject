@@ -18,7 +18,7 @@ pipeline {
         
         stage('Build and Push Docker Images') {
             steps {
-                sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
+            //     sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
                 sh 'docker build -t thejasrao2003/mircro_services-client -f mircro_services-client/Dockerfile .'
                 sh 'docker build -t thejasrao2003/mircro_services-user -f mircro_services-user/Dockerfile .'
                 sh 'docker build -t thejasrao2003/mircro_services-product -f mircro_services-product/Dockerfile .'
