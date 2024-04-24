@@ -1,12 +1,35 @@
 pipeline {
-    agent {
-    label 'docker' 
-  }
+    agent any
     stages {
         stage('Checkout source'){
             steps {
                 git branch: 'main', url: 'https://github.com/thejasrao262003/cloudComputingProject.git'
                 echo 'git clone completed'
+            }
+        }
+        stage('Install Docker') {
+            steps {
+                script {
+                    // Download and install Docker
+                    sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
+                    sh 'sudo sh get-docker.sh'
+                    
+                    // Add the Jenkins user to the docker group
+                    sh 'sudo usermod -aG docker $USER'
+                    
+                    // Restart Docker service
+                    sh 'sudo systemctl restart docker'
+                }
+            }
+        }
+
+        stage('Verify Docker Installation') {
+            steps {
+                // Check Docker version
+                sh 'docker --version'
+                
+                // Check Docker info
+                sh 'docker info'
             }
         }
         stage('Build and Push Docker Images') {
