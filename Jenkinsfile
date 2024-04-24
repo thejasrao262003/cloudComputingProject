@@ -18,13 +18,17 @@ pipeline {
         
         stage('Build and Push Docker Images') {
             steps {
-                script {
-                    docker.build('thejasrao2003/nginx', '-f nginx/Dockerfile .').push('latest')
-                    docker.build('thejasrao2003/mircro_services-client', '-f mircro_services-client/Dockerfile .').push('latest')
-                    docker.build('thejasrao2003/mircro_services-user', '-f mircro_services-user/Dockerfile .').push('latest')
-                    docker.build('thejasrao2003/mircro_services-product', '-f mircro_services-product/Dockerfile .').push('latest')
-                    docker.build('thejasrao2003/mircro_services-order', '-f mircro_services-order/Dockerfile .').push('latest')
-                }
+                sh 'docker build -t thejasrao2003/nginx -f nginx/Dockerfile .'
+                sh 'docker build -t thejasrao2003/mircro_services-client -f mircro_services-client/Dockerfile .'
+                sh 'docker build -t thejasrao2003/mircro_services-user -f mircro_services-user/Dockerfile .'
+                sh 'docker build -t thejasrao2003/mircro_services-product -f mircro_services-product/Dockerfile .'
+                sh 'docker build -t thejasrao2003/mircro_services-order -f mircro_services-order/Dockerfile .'
+
+                sh 'docker push thejasrao2003/nginx:latest'
+                sh 'docker push thejasrao2003/mircro_services-client:latest'
+                sh 'docker push thejasrao2003/mircro_services-user:latest'
+                sh 'docker push thejasrao2003/mircro_services-product:latest'
+                sh 'docker push thejasrao2003/mircro_services-order:latest'
             }
         }
         
@@ -50,10 +54,3 @@ pipeline {
         }
     }
 }
-
-def dockerImagePush(repository, imageName, imageTag) {
-    def customImage = docker.build(repository, "-f ${imageName}/Dockerfile .")
-    customImage.tag("${repository}/${imageName}:${imageTag}")
-    customImage.push()
-}
-
