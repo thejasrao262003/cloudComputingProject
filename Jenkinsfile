@@ -22,7 +22,7 @@ pipeline {
                     // Build Docker images from the specified directories
                     sh 'docker build -t thejasrao2003/mircro_services-client -f client/Dockerfile client/'
                     sh 'docker build -t thejasrao2003/mircro_services-user -f server/userManagement/Dockerfile server/userManagement/'
-                    sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagment/Dockerfile server/productManagment/'
+                    sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagement/Dockerfile server/productManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-order -f server/orderManagement/Dockerfile server/orderManagement/'
                 }
             }
