@@ -19,11 +19,18 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
+                    sh 'docker rm -f $(docker ps -aq)'
                     // Build Docker images from the specified directories
                     sh 'docker build -t thejasrao2003/mircro_services-client -f client/Dockerfile client/'
                     sh 'docker build -t thejasrao2003/mircro_services-user -f server/userManagement/Dockerfile server/userManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagement/Dockerfile server/productManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-order -f server/orderManagement/Dockerfile server/orderManagement/'
+                    
+                    // Run Docker containers
+                    sh 'docker run -d -p 3000:3000 thejasrao2003/mircro_services-client'
+                    sh 'docker run -d -p 5001:5001 thejasrao2003/mircro_services-user'
+                    sh 'docker run -d -p 5002:5002 thejasrao2003/mircro_services-product'
+                    sh 'docker run -d -p 5003:5003 thejasrao2003/mircro_services-order'
                     sh 'docker ps -a'
                 }
             }
