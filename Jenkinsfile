@@ -35,6 +35,23 @@ pipeline {
                     sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagement/Dockerfile server/productManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-order -f server/orderManagement/Dockerfile server/orderManagement/'
                     
+                }
+            }
+        }
+        stage('Push to Docker Hub'){
+            steps{
+                script{
+                    sh 'docker push thejasrao2003/mircro_services-client:latest'
+                    sh 'docker push thejasrao2003/mircro_services-user:latest'
+                    sh 'docker push thejasrao2003/mircro_services-product:latest'
+                    sh 'docker push thejasrao2003/mircro_services-order:latest'
+                }
+            }
+        }
+
+        stage('Run docker'){
+            steps{
+                script{
                     // Run Docker containers
                     sh 'docker run -d -p 3000:3000 thejasrao2003/mircro_services-client'
                     sh 'docker run -d -p 5001:5001 thejasrao2003/mircro_services-user'
