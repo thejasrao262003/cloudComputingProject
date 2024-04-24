@@ -1,46 +1,38 @@
 pipeline {
     agent any
+    
     stages {
-        stage('Checkout source'){
+        stage('Checkout source') {
             steps {
                 git branch: 'main', url: 'https://github.com/thejasrao262003/cloudComputingProject.git'
                 echo 'git clone completed'
             }
         }
+        
         stage('Install Docker') {
             steps {
                 script {
-                    // Download and install Docker
                     sh 'curl -fsSL https://get.docker.com -o get-docker.sh'
-                    sh 'sudo sh get-docker.sh'
-                    
-                    // Add the Jenkins user to the docker group
-                    sh 'sudo usermod -aG docker $USER'
-                    
-                    // Restart Docker service
-                    sh 'sudo systemctl restart docker'
+                    sh 'sh get-docker.sh'
                 }
             }
         }
 
         stage('Verify Docker Installation') {
             steps {
-                // Check Docker version
                 sh 'docker --version'
-                
-                // Check Docker info
                 sh 'docker info'
             }
         }
+        
         stage('Build and Push Docker Images') {
             steps {
                 script {
-                    
-                    dockerImagePush('thejasrao2003', 'nginx', 'latest')
-                    dockerImagePush('thejasrao2003', 'mircro_services-client', 'latest')
-                    dockerImagePush('thejasrao2003', 'mircro_services-user', 'latest')
-                    dockerImagePush('thejasrao2003', 'mircro_services-product', 'latest')
-                    dockerImagePush('thejasrao2003', 'mircro_services-order', 'latest')
+                    docker.build('thejasrao2003/nginx', '-f nginx/Dockerfile .').push('latest')
+                    docker.build('thejasrao2003/mircro_services-client', '-f mircro_services-client/Dockerfile .').push('latest')
+                    docker.build('thejasrao2003/mircro_services-user', '-f mircro_services-user/Dockerfile .').push('latest')
+                    docker.build('thejasrao2003/mircro_services-product', '-f mircro_services-product/Dockerfile .').push('latest')
+                    docker.build('thejasrao2003/mircro_services-order', '-f mircro_services-order/Dockerfile .').push('latest')
                 }
             }
         }
@@ -49,13 +41,8 @@ pipeline {
             steps {
                 script {
                     sh "minikube start"
-                    // Apply Kubernetes deployment
                     sh "kubectl apply -f kubernetes_deployment.yaml"
-                    
-                    // Apply Kubernetes services
                     sh "kubectl apply -f kubernetes_services.yaml"
-                    
-                    // Port forward services for debugging
                     sh "kubectl port-forward service/nginx-deployment 80:80 &"
                     sh "kubectl port-forward service/client-deployment 3000:3000 &"
                     sh "kubectl port-forward service/user-management-deployment 5001:5001 &"
@@ -72,6 +59,7 @@ pipeline {
         }
     }
 }
+
 def dockerImagePush(repository, imageName, imageTag) {
     def customImage = docker.build(repository, "-f ${imageName}/Dockerfile .")
     customImage.tag("${repository}/${imageName}:${imageTag}")
