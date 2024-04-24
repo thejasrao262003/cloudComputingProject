@@ -1,6 +1,12 @@
 pipeline {
     agent any    
     stages {
+        stage('Checkout source'){
+            steps {
+                git branch: 'main', url: 'https://github.com/thejasrao262003/cloudComputingProject.git'
+                echo 'git clone completed'
+            }
+        }
         stage('Build and Push Docker Images') {
             steps {
                 script {
