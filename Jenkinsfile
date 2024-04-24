@@ -1,6 +1,10 @@
 pipeline {
     agent any
-    
+    environment{
+        dockerhubuser = 'thejasrao2003'
+        
+        DOCKERHUB_CREDENTIALS = credentials('thejasrao2003')
+    }
     stages {
         stage('Checkout source') {
             steps {
@@ -8,7 +12,13 @@ pipeline {
                 echo 'git clone completed'
             }
         }
-        
+        stage('Docker Login') {
+           steps {
+               echo 'Logon in to docker hub'
+               sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin docker.io'
+               echo 'Login Successfull'
+           }
+       }
         stage('Verify Docker Installation') {
             steps {
                 sh 'docker --version'
@@ -36,20 +46,20 @@ pipeline {
             }
         }
         
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    sh "minikube start"
-                    sh "kubectl apply -f kubernetes_deployment.yaml"
-                    sh "kubectl apply -f kubernetes_services.yaml"
-                    sh "kubectl port-forward service/nginx-deployment 80:80 &"
-                    sh "kubectl port-forward service/client-deployment 3000:3000 &"
-                    sh "kubectl port-forward service/user-management-deployment 5001:5001 &"
-                    sh "kubectl port-forward service/product-management-deployment 5002:5002 &"
-                    sh "kubectl port-forward service/order-management-deployment 5003:5003 &"
-                }
-            }
-        }
+    //     stage('Deploy to Kubernetes') {
+    //         steps {
+    //             script {
+    //                 sh "minikube start"
+    //                 sh "kubectl apply -f kubernetes_deployment.yaml"
+    //                 sh "kubectl apply -f kubernetes_services.yaml"
+    //                 sh "kubectl port-forward service/nginx-deployment 80:80 &"
+    //                 sh "kubectl port-forward service/client-deployment 3000:3000 &"
+    //                 sh "kubectl port-forward service/user-management-deployment 5001:5001 &"
+    //                 sh "kubectl port-forward service/product-management-deployment 5002:5002 &"
+    //                 sh "kubectl port-forward service/order-management-deployment 5003:5003 &"
+    //             }
+    //         }
+    //     }
     }
     
     post {
