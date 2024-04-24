@@ -24,7 +24,7 @@ pipeline {
                     sh 'docker build -t thejasrao2003/mircro_services-user -f server/userManagement/Dockerfile server/userManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-product -f server/productManagement/Dockerfile server/productManagement/'
                     sh 'docker build -t thejasrao2003/mircro_services-order -f server/orderManagement/Dockerfile server/orderManagement/'
-                    sh 'docker ps -a"
+                    sh 'docker ps -a'
                 }
             }
         }
