@@ -29,7 +29,7 @@ const orderSchema = new mongoose.Schema({
         productId: mongoose.Schema.Types.ObjectId,
         productName: String,
         quantity: Number,
-        price: Number
+        price: Number // Add price field
     }],
     total: {
         type: Number,
@@ -69,7 +69,8 @@ const cartSchema = new mongoose.Schema({
     items: [{
         productId: mongoose.Schema.Types.ObjectId,
         productName: String,
-        productImageURL: String // Added productImageURL field to cart item
+        productImageURL: String,
+        price: Number // Add price field
     }]
 });
 
@@ -134,20 +135,20 @@ app.post('/api/orders/putOrders', async (req, res) => {
 // Route for adding a product to the cart
 app.post('/api/order/cart/add', async (req, res) => {
     try {
-        const { productId, productName, productImageURL, userEmail } = req.body;
+        const { productId, productName, productImageURL, price, userEmail } = req.body; // Add price field
         let cart = await Cart.findOne({ userEmail });
 
         if (!cart) {
             cart = new Cart({
                 userEmail,
-                items: [{ productId, productName, productImageURL }]
+                items: [{ productId, productName, productImageURL, price }] // Add price field
             });
         } else {
             const existingCartItem = cart.items.find(item => item.productId.equals(productId));
             if (existingCartItem) {
                 return res.status(400).send('Product already in cart');
             }
-            cart.items.push({ productId, productName, productImageURL });
+            cart.items.push({ productId, productName, productImageURL, price }); // Add price field
         }
 
         await cart.save();
@@ -192,6 +193,7 @@ app.get('/api/order/cart/:userEmail', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 // Route for creating an order (checkout)
 app.post('/api/orders/create', async (req, res) => {
     try {
@@ -226,6 +228,16 @@ app.post('/api/orders/create', async (req, res) => {
     }
 });
 
+app.get('/api/orders/orderPage', async (req, res) => {
+    const { userID } = req.query; // Assuming the userID is sent as a query parameter
+    try {
+        const orders = await Order.find({ userId: userID }).sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
 app.get("/", async (req, res)=>{
     res.status(200).send("Server has started");
 });

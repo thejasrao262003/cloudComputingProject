@@ -10,6 +10,7 @@ import CartPage from './Cart/Cart';
 import UpdateProfilePage from './Login/updateProfile';
 import Navbar from './Navbar/Navbar';
 import CheckoutPage from './Checkout/CheckoutPage';
+import OrdersPage from './Orders/OrdersPage';
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -31,6 +32,7 @@ function App() {
                     <PrivateRoute exact path='/cart' isAuthenticated={isAuthenticated} component={CartPage} />
                     <PrivateRoute exact path='/update-profile' isAuthenticated={isAuthenticated} component={UpdateProfilePage} />
                     <PrivateRoute exact path='/checkout' isAuthenticated={isAuthenticated} component={CheckoutPage}/>
+                    <PrivateRoute exact path='/past-orders' isAuthenticated={isAuthenticated} component={OrdersPage}/>
                 </Switch>
             </div>
         </Router>

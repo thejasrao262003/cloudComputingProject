@@ -25,7 +25,7 @@ const ProductList = () => {
     }
   }, []);
 
-  const addToCart = async (productId, productName, productImageURL) => {
+  const addToCart = async (productId, productName, productImageURL, productPrice) => {
     try {
       const userEmail = user.email;
       const userId = user._id;
@@ -34,6 +34,7 @@ const ProductList = () => {
         productId,
         productName,
         productImageURL,
+        productPrice, // Include product price in the request
         userEmail
       });
       alert('Product added to cart successfully');
@@ -50,16 +51,6 @@ const ProductList = () => {
   return (
     <div className="product-list-container">
       <h2>Product List</h2>
-      {/* Display user information */}
-      {user && (
-        <div className="user-info">
-          <p>User Information:</p>
-          <p>Email: {user.email}</p>
-          <p>Name: {user.name}</p>
-          <p>Phone Number: {user.phoneNumber}</p>
-          <p>Address: {user.address}</p>
-        </div>
-      )}
       <div className="search-bar">
         <input
           type="text"
@@ -84,7 +75,7 @@ const ProductList = () => {
               <p className="product-details">Details: {product.productDetails}</p>
               <div className="add-to-cart-section">
                 <input type="number" defaultValue="1" min="1" className="quantity-input" />
-                <button className="add-to-cart-button" onClick={() => addToCart(product._id, product.productName, product.productImageURL)}>Add to Cart</button>
+                <button className="add-to-cart-button" onClick={() => addToCart(product._id, product.productName, product.productImageURL, product.price)}>Add to Cart</button>
               </div>
             </div>
           </div>

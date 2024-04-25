@@ -1,5 +1,7 @@
+// Import necessary modules
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './Checkout.css'; // Import CSS file for styling
 
 const CheckoutPage = () => {
     const [user, setUser] = useState(null);
@@ -18,7 +20,7 @@ const CheckoutPage = () => {
         if (storedUser) {
             const parsedUser = JSON.parse(storedUser);
             setUser(parsedUser);
-            fetchCartItems(parsedUser.email); // Fetch cart items using user's email
+            fetchCartItems(parsedUser.email);
         }
     }, []);
 
@@ -31,13 +33,61 @@ const CheckoutPage = () => {
         }
     };
 
-    const handleCheckout = () => {
-        console.log('Checkout clicked');
+    const calculateTotal = () => {
+        // Implement your logic to calculate total price from cartItems
+        // For example:
+        // return cartItems.reduce((total, item) => total + (item.quantity * item.price), 0);
+        return 0; // Placeholder
+    };
+
+    const handleCheckout = async () => {
+        try {
+            const checkoutData = {
+                userId: user._id, // Assuming you have the user's ID available
+                userName: user.name, // Assuming you have the user's name available
+                products: cartItems.map(item => ({
+                    productId: item.productId,
+                    productName: item.productName,
+                    quantity: item.quantity, // You may need to adjust this depending on your cart item structure
+                    price: item.price // You may need to adjust this depending on your cart item structure
+                })),
+                total: calculateTotal(), // Assuming you have a function to calculate the total price
+                deliveryAddress,
+                paymentOption,
+                cardDetails: paymentOption === 'debitCard' || paymentOption === 'creditCard' ? {
+                    cardNumber,
+                    cardHolderName,
+                    expiryDate,
+                    cvv
+                } : null,
+                upiDetails: paymentOption === 'UPI' ? {
+                    bankName,
+                    pin: upiPin
+                } : null
+            };
+
+            const response = await axios.post('http://localhost:5003/api/orders/create', checkoutData);
+            console.log('Checkout successful:', response.data);
+
+            // Optionally, reset the form fields or navigate to a confirmation page
+            setDeliveryAddress('');
+            setPaymentOption('cash');
+            setCardNumber('');
+            setCardHolderName('');
+            setExpiryDate('');
+            setCvv('');
+            setBankName('');
+            setUpiPin('');
+            // Display a success message or navigate to a confirmation page
+        } catch (error) {
+            console.error('Error during checkout:', error);
+            // Handle error - display error message or allow the user to retry checkout
+        }
     };
 
     return (
-        <div>
-            <h1>Checkout Page</h1>
+        <div className="checkout-container">
+            <h1>Checkout</h1>
             {cartItems && cartItems.length > 0 ? (
                 <div>
                     <h2>Products in Cart:</h2>
@@ -50,17 +100,40 @@ const CheckoutPage = () => {
             ) : (
                 <p>No items in cart</p>
             )}
-            <label htmlFor="deliveryAddress">Delivery Address:</label>
-            <input type="text" id="deliveryAddress" value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} />
-            <label htmlFor="paymentOption">Payment Option:</label>
-            <select id="paymentOption" value={paymentOption} onChange={e => setPaymentOption(e.target.value)}>
-                <option value="cash">Cash</option>
-                <option value="UPI">UPI</option>
-                <option value="debitCard">Debit Card</option>
-                <option value="creditCard">Credit Card</option>
-            </select>
-            {/* Add inputs for card details and UPI details based on payment option */}
-            <button onClick={handleCheckout}>Checkout</button>
+            <div className="checkout-form">
+                <label htmlFor="deliveryAddress">Delivery Address:</label>
+                <input type="text" id="deliveryAddress" value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} />
+
+                <label htmlFor="paymentOption">Payment Option:</label>
+                <select id="paymentOption" value={paymentOption} onChange={e => setPaymentOption(e.target.value)}>
+                    <option value="cash">Cash</option>
+                    <option value="UPI">UPI</option>
+                    <option value="debitCard">Debit Card</option>
+                    <option value="creditCard">Credit Card</option>
+                </select>
+
+                {paymentOption === 'debitCard' || paymentOption === 'creditCard' ? (
+                    <div>
+                        <label htmlFor="cardNumber">Card Number:</label>
+                        <input type="text" id="cardNumber" value={cardNumber} onChange={e => setCardNumber(e.target.value)} />
+
+                        <label htmlFor="cardHolderName">Card Holder Name:</label>
+                        <input type="text" id="cardHolderName" value={cardHolderName} onChange={e => setCardHolderName(e.target.value)} />
+
+                        <label htmlFor="expiryDate">Expiry Date:</label>
+                        <input type="text" id="expiryDate" value={expiryDate} onChange={e => setExpiryDate(e.target.value)} />
+
+                        <label htmlFor="cvv">CVV:</label>
+                        <input type="text" id="cvv" value={cvv} onChange={e => setCvv(e.target.value)} />
+                    </div>
+                ) : paymentOption === 'UPI' ? (
+                    <div>
+                        <label htmlFor="upiPin">UPI PIN:</label>
+                        <input type="password" id="upiPin" value={upiPin} onChange={e => setUpiPin(e.target.value)} />
+                    </div>
+                ) : null}
+            </div>
+            <button onClick={handleCheckout}>Proceed to Checkout</button>
         </div>
     );
 };

@@ -14,7 +14,7 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
     return (
         <nav className="navbar">
             <div className="navbar-brand">
-                <Link to="/" className="navbar-logo">Your Brand</Link>
+                <Link to="/" className="navbar-logo">ECommerce</Link>
             </div>
             <ul className="navbar-nav">
                 <li className="nav-item"><Link to="/" className="nav-link">Home</Link></li>
@@ -29,7 +29,8 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
                 {isAuthenticated ? (
                     <>
                         <Link to="/account" className="navbar-icon"><i className="fas fa-user"></i></Link>
-                        <button onClick={handleLogout} className="navbar-icon"><i className="fas fa-sign-out-alt"></i></button>
+                        <button onClick={handleLogout} className="navbar-icon"><i className="fas fa-sign-out-alt"></i> Logout</button>
+
                     </>
                 ) : (
                     <Link to="/login" className="navbar-icon"><i className="fas fa-sign-in-alt"></i></Link>

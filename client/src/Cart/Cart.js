@@ -1,13 +1,12 @@
-// CartPage.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom'; // Import useHistory hook
+import { useHistory } from 'react-router-dom';
 import './Cart.css';
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [user, setUser] = useState(null);
-  const history = useHistory(); // Initialize useHistory hook
+  const history = useHistory();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -46,7 +45,6 @@ const CartPage = () => {
   };
 
   const handleCheckout = () => {
-    // Navigate to checkout page
     history.push('/checkout');
   };
 
@@ -63,8 +61,6 @@ const CartPage = () => {
 };
 
 const CartItem = ({ item, removeFromCart }) => {
-  console.log('Item:', item); // Log the item object to inspect its properties
-
   const handleRemove = () => {
     removeFromCart(item.productId);
   };
@@ -72,7 +68,9 @@ const CartItem = ({ item, removeFromCart }) => {
   return (
     <div className="cart-item">
       <div className="item-details">
-        <img src={item.productImageURL} alt={item.productName} className="item-image" /> {/* Display the image */}
+        {item.productImageURL && (
+          <img src={item.productImageURL} alt={item.productName} className="item-image" />
+        )}
         <p className="item-name">{item.productName}</p>
         <button className="remove-button" onClick={handleRemove}>Remove</button>
       </div>
