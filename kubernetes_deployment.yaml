@@ -27,6 +27,7 @@ metadata:
   labels:
     app: client
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: client
@@ -48,6 +49,7 @@ metadata:
   labels:
     app: user-management
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: user-management
@@ -69,6 +71,7 @@ metadata:
   labels:
     app: product-management
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: product-management
@@ -90,6 +93,7 @@ metadata:
   labels:
     app: order-management
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: order-management
